@@ -17,11 +17,12 @@ public class GunController : MonoBehaviour {
     private SpriteRenderer mySpriteRenderer;
     public Transform firePoint;
 
+    public string ownerID;
+
 	// Use this for initialization
 	void Start () {
         shotCounter = 0;
         mySpriteRenderer = GetComponent<SpriteRenderer>();
-
     }
 	
 	// Update is called once per frame
@@ -37,6 +38,7 @@ public class GunController : MonoBehaviour {
                 newBullet.minDamage = bulletMinDamage;
                 newBullet.maxDamage = bulletMaxDamage;
                 newBullet.range = bulletRange;
+                newBullet.ownerID = ownerID;
             }
         } else
         {

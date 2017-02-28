@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PlayerController : BaseEntity
 {
+    public override void Start()
+    {
+        base.Start();
+        Debug.Log("PLAYER ID: " + ID);        
+    }
+
     public override void UpdateInputs()
     {
         horizontalAxis = Input.GetAxisRaw("Horizontal");

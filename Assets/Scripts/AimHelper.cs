@@ -6,22 +6,10 @@ using UnityEngine;
 
 public class AimHelper
 {
-    public enum XAngle
-    {
-        Right,
-        Left
-    }
-
-    public enum YAngle
-    {
-        Top,
-        Bottom
-    }
-
     public class AimAngle
     {
-        public XAngle x;
-        public YAngle y;
+        public Enums.Angles.X x;
+        public Enums.Angles.Y y;
     }
 
     public static AimAngle GetCurrentAimAngle(Vector2 mousePos, Vector2 playerPos)
@@ -36,22 +24,22 @@ public class AimHelper
         AimAngle currentAngle = new AimAngle();
         if (angleDegrees > 0 && angleDegrees <= 90)
         {
-            currentAngle.x = XAngle.Right;
-            currentAngle.y = YAngle.Top;
+            currentAngle.x = Enums.Angles.X.Right;
+            currentAngle.y = Enums.Angles.Y.Top;
         }
         else if (angleDegrees > 90 && angleDegrees <= 180)
         {
-            currentAngle.x = XAngle.Left;
-            currentAngle.y = YAngle.Top;
+            currentAngle.x = Enums.Angles.X.Left;
+            currentAngle.y = Enums.Angles.Y.Top;
         }
         else if (angleDegrees > 180 && angleDegrees <= 270)
         {
-            currentAngle.x = XAngle.Left;
-            currentAngle.y = YAngle.Bottom;
+            currentAngle.x = Enums.Angles.X.Left;
+            currentAngle.y = Enums.Angles.Y.Bottom;
         } else
         {
-            currentAngle.x = XAngle.Right;
-            currentAngle.y = YAngle.Bottom;
+            currentAngle.x = Enums.Angles.X.Right;
+            currentAngle.y = Enums.Angles.Y.Bottom;
         }
 
         return currentAngle;

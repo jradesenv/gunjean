@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,12 +25,23 @@ public class BaseEntity : MonoBehaviour
     public Vector2 currentVelocity;
     protected AimHelper.AimAngle currentAimAngle;
     protected AimHelper.AimAngle lastAimAngle;
+    public string ID;
+
+    public Dictionary<Enums.Items.Type, float> inventory;
 
     public virtual void Start()
     {
+        ID = generateID();
         currentHP = maxHP;
         myRigidbody = GetComponent<Rigidbody2D>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
+        myGun.ownerID = ID;
+        inventory = new Dictionary<Enums.Items.Type, float>();
+    }
+
+    public string generateID()
+    {
+        return System.Guid.NewGuid().ToString("N");
     }
 
     // Update is called once per frame
@@ -46,7 +58,7 @@ public class BaseEntity : MonoBehaviour
 
     public virtual void FixedUpdate()
     {
-        
+
     }
 
     public virtual void UpdateInputs()
@@ -69,7 +81,8 @@ public class BaseEntity : MonoBehaviour
         {
             var moveInput = new Vector2(horizontalAxis, verticalAxis);
             currentVelocity = moveInput * moveSpeed;
-        } else
+        }
+        else
         {
             currentVelocity = Vector2.zero;
         }
@@ -106,7 +119,7 @@ public class BaseEntity : MonoBehaviour
 
         if (currentAimAngle != lastAimAngle)
         {
-            if (currentAimAngle.y == AimHelper.YAngle.Top)
+            if (currentAimAngle.y == Enums.Angles.Y.Top)
             {
                 mySpriteRenderer.sprite = lookingUpSprite;
             }
@@ -115,7 +128,7 @@ public class BaseEntity : MonoBehaviour
                 mySpriteRenderer.sprite = lookingDownSprite;
             }
 
-            if (currentAimAngle.x == AimHelper.XAngle.Left)
+            if (currentAimAngle.x == Enums.Angles.X.Left)
             {
                 myGun.SetBehindEntity(true, mySpriteRenderer);
             }
@@ -124,7 +137,7 @@ public class BaseEntity : MonoBehaviour
                 myGun.SetBehindEntity(false, mySpriteRenderer);
             }
 
-            if (lastAimAngle != null && currentAimAngle.x != lastAimAngle.x)
+            if ((lastAimAngle == null && currentAimAngle.x == Enums.Angles.X.Left) || (lastAimAngle != null && currentAimAngle.x != lastAimAngle.x))
             {
                 Flip();
             }
@@ -143,18 +156,66 @@ public class BaseEntity : MonoBehaviour
         gameObject.transform.localScale = newScale;
     }
 
-    void OnCollisionEnter2D(Collision2D other)
+    public void Hit(AttackDTO atk)
     {
-        BulletController bullet = other.gameObject.GetComponent<BulletController>();
-        if (bullet)
-        {
-            currentHP -= Random.Range(bullet.minDamage, bullet.maxDamage + 1);
-            Destroy(other.gameObject);
+        //calc the damage reducer by damage type defense etc
+        float finalDamage = atk.damage;
+        currentHP -= finalDamage;
 
-            if (currentHP <= 0)
+        LogWithHP("Was hit by", finalDamage);
+
+        if (currentHP <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void Collect(BaseItem item)
+    {
+        if (item.collectType == Enums.Items.CollectType.Collect)
+        {
+            if (!inventory.ContainsKey(item.type))
             {
-                Destroy(gameObject);
+                inventory.Add(item.type, item.quantity);
+            }
+            else
+            {
+                inventory[item.type] += item.quantity;
             }
         }
+        else if (item.collectType == Enums.Items.CollectType.Instant)
+        {
+            Use(item);
+        }
+    }
+
+    public void Use(BaseItem item)
+    {
+        switch (item.type)
+        {
+            case Enums.Items.Type.Health:
+                Heal(item.quantity);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void Heal(float quantity)
+    {        
+        if (currentHP + quantity > maxHP)
+        {
+            currentHP = maxHP;
+        } else
+        {
+            currentHP += quantity;
+        }
+
+        LogWithHP("Healed", quantity);
+    }
+
+    private void LogWithHP(string action, float quantity)
+    {
+        Debug.Log("Entity " + ID + " " + action + " " + quantity + " - CURRENT HP: " + currentHP);
     }
 }
