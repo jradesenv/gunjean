@@ -119,7 +119,7 @@ public class EnemyController : BaseEntity
     {
         if (possibleLoot != null && possibleLoot.Count > 0)
         {
-            var dropIndex = Random.Range(0, possibleLoot.Count + 3);
+            var dropIndex = Random.Range(0, possibleLoot.Count + 2);
 
             if (dropIndex < possibleLoot.Count)
             {
