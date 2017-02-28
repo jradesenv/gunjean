@@ -7,5 +7,5 @@ public class BaseItem
 {
     public Enums.Items.Type type;
     public Enums.Items.CollectType collectType;
-    public float quantity;
+    public int quantity;
 }

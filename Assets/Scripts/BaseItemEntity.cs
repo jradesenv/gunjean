@@ -9,7 +9,7 @@ public class BaseItemEntity : MonoBehaviour
     public Enums.Items.Type type;
     public Enums.Items.CollectType collectType;
     public bool isSolid;
-    public float quantity;
+    public int quantity;
 
     void OnCollisionEnter2D(Collision2D other)
     {

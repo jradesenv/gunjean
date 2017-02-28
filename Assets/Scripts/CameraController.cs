@@ -26,6 +26,7 @@ public class CameraController : MonoBehaviour
 
     public void Follow(BaseEntity target)
     {
+        moveSpeed = target.moveSpeed - 1;
         targetToFollow = target;
     }
 }

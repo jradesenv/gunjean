@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class BaseEntity : MonoBehaviour
 {
-    public float maxHP;
-    public float currentHP;
+    public FloatingNumberController floatingNumber;
+    public GameObject topHitPoint;
+    public int maxHP;
+    public int currentHP;
     public float moveSpeed;
     public GunController myGun;
     public Sprite lookingUpSprite;
@@ -159,8 +161,16 @@ public class BaseEntity : MonoBehaviour
     public void Hit(AttackDTO atk)
     {
         //calc the damage reducer by damage type defense etc
-        float finalDamage = atk.damage;
+        int finalDamage = atk.damage;
+
+        if (finalDamage > currentHP)
+        {
+            finalDamage = currentHP;
+        }
+
+        DisplayFloatingNumber(finalDamage);
         currentHP -= finalDamage;
+
 
         LogWithHP("Was hit by", finalDamage);
 
@@ -168,6 +178,13 @@ public class BaseEntity : MonoBehaviour
         {
             Dead();
         }
+    }
+
+    private void DisplayFloatingNumber(int number)
+    {
+        var clone = Instantiate(floatingNumber, topHitPoint.transform.position, Quaternion.Euler(Vector3.zero));
+        var cloneComponent = clone.GetComponent<FloatingNumberController>();
+        cloneComponent.displayNumber = number;
     }
 
     public void Dead()
@@ -212,7 +229,7 @@ public class BaseEntity : MonoBehaviour
         }
     }
 
-    public void Heal(float quantity)
+    public void Heal(int quantity)
     {        
         if (currentHP + quantity > maxHP)
         {

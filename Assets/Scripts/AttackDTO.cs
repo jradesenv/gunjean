@@ -5,7 +5,7 @@ using System.Text;
 
 public class AttackDTO
 {
-    public float damage;
+    public int damage;
     public Enums.Damage.Type type;
 }
 
