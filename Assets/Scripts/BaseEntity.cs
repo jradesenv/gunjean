@@ -166,8 +166,19 @@ public class BaseEntity : MonoBehaviour
 
         if (currentHP <= 0)
         {
-            Destroy(gameObject);
+            Dead();
         }
+    }
+
+    public void Dead()
+    {
+        BeforeDead();
+        Destroy(gameObject);
+    }
+
+    protected virtual void BeforeDead()
+    {
+
     }
 
     public void Collect(BaseItem item)

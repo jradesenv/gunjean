@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemyController : BaseEntity
 {
+    public List<BaseItemEntity> possibleLoot;
+
     private bool isTargetInRange;
     private bool hasTarget;
 
@@ -111,5 +113,19 @@ public class EnemyController : BaseEntity
         }
 
         base.UpdateMovement();
+    }
+
+    protected override void BeforeDead()
+    {
+        if (possibleLoot != null && possibleLoot.Count > 0)
+        {
+            var dropIndex = Random.Range(0, possibleLoot.Count + 3);
+
+            if (dropIndex < possibleLoot.Count)
+            {
+                var drop = possibleLoot[dropIndex];
+                Instantiate(drop, gameObject.transform.position, Quaternion.identity);
+            }
+        }
     }
 }
