@@ -7,7 +7,15 @@ public class PlayerController : BaseEntity
     public override void Start()
     {
         base.Start();
-        Debug.Log("PLAYER ID: " + ID);        
+
+        var camera = FindObjectOfType<CameraController>();
+        if (camera != null)
+        {
+            camera.Follow(this);
+        } else
+        {
+            Debug.LogError("CANT FIND CAMERA");
+        }
     }
 
     public override void UpdateInputs()

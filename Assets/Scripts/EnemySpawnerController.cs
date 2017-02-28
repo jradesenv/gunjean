@@ -11,6 +11,8 @@ public class EnemySpawnerController : MonoBehaviour {
     private float timeBetweenSpawnsCounter;
     private float lastSpawnTime;
 
+    public int maxEnemiesAtSameTime;
+
 	// Use this for initialization
 	void Start () {
         timeBetweenSpawnsCounter = GetRandomSpawnTime();
@@ -21,14 +23,27 @@ public class EnemySpawnerController : MonoBehaviour {
         timeBetweenSpawnsCounter -= Time.deltaTime;
         if(timeBetweenSpawnsCounter <= 0)
         {
-            Instantiate(enemy, transform.position, transform.rotation);
-            while(timeBetweenSpawnsCounter <= 0 || timeBetweenSpawnsCounter == lastSpawnTime)
+            if (CanSpawnMore())
             {
-                timeBetweenSpawnsCounter = GetRandomSpawnTime();
+                Spawn();
             }
-            lastSpawnTime = timeBetweenSpawnsCounter;
         }
 	}
+
+    bool CanSpawnMore()
+    {
+        return FindObjectsOfType<EnemyController>().Length < maxEnemiesAtSameTime;
+    }
+
+    void Spawn()
+    {
+        Instantiate(enemy, transform.position, transform.rotation);
+        while (timeBetweenSpawnsCounter <= 0 || timeBetweenSpawnsCounter == lastSpawnTime)
+        {
+            timeBetweenSpawnsCounter = GetRandomSpawnTime();
+        }
+        lastSpawnTime = timeBetweenSpawnsCounter;
+    }
 
     private float GetRandomSpawnTime()
     {
