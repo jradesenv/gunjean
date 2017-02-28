@@ -8,6 +8,7 @@ public class BaseItemEntity : MonoBehaviour
 {
     public Enums.Items.Type type;
     public Enums.Items.CollectType collectType;
+    public Enums.Items.Rarity rarity;
     public bool isSolid;
     public int quantity;
 

@@ -5,6 +5,12 @@ using System.Text;
 
 public class Enums
 {
+    public enum FloatingNumberType
+    {
+        Damage,
+        Heal
+    }
+
     public class Items
     {
         public enum Type

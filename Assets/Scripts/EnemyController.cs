@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyController : BaseEntity
@@ -8,6 +9,18 @@ public class EnemyController : BaseEntity
 
     private bool isTargetInRange;
     private bool hasTarget;
+
+    public override void Start()
+    {
+        base.Start();
+
+        if (possibleLoot == null)
+        {
+            possibleLoot = new List<BaseItemEntity>();
+        }
+
+        possibleLoot = possibleLoot.OrderBy(item => (int)item.rarity).ToList();
+    }
 
     public override void UpdateInputs()
     {
@@ -117,15 +130,32 @@ public class EnemyController : BaseEntity
 
     protected override void BeforeDead()
     {
-        if (possibleLoot != null && possibleLoot.Count > 0)
+        BaseItemEntity lootItem = GetRandomLoot();
+        if (lootItem != null)
         {
-            var dropIndex = Random.Range(0, possibleLoot.Count + 2);
+            Instantiate(lootItem, gameObject.transform.position, Quaternion.identity);
+        }       
+    }
 
-            if (dropIndex < possibleLoot.Count)
+    private BaseItemEntity GetRandomLoot()
+    {
+        var range = 0;
+        for (var i = 0; i < possibleLoot.Count; i++)
+            range += (int)possibleLoot[i].rarity;
+
+        range += range; //just so it can drop nothing
+        var rand = Random.Range(0, range);
+        var top = 0;
+
+        for (var i = 0; i < possibleLoot.Count; i++)
+        {
+            top += (int)possibleLoot[i].rarity;
+            if (rand < top)
             {
-                var drop = possibleLoot[dropIndex];
-                Instantiate(drop, gameObject.transform.position, Quaternion.identity);
+                return possibleLoot[i];
             }
         }
+
+        return null;
     }
 }

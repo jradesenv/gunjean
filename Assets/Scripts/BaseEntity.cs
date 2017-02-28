@@ -168,7 +168,7 @@ public class BaseEntity : MonoBehaviour
             finalDamage = currentHP;
         }
 
-        DisplayFloatingNumber(finalDamage);
+        DisplayFloatingNumber(finalDamage, Enums.FloatingNumberType.Damage);
         currentHP -= finalDamage;
 
 
@@ -180,11 +180,12 @@ public class BaseEntity : MonoBehaviour
         }
     }
 
-    private void DisplayFloatingNumber(int number)
+    private void DisplayFloatingNumber(int number, Enums.FloatingNumberType type)
     {
-        var clone = Instantiate(floatingNumber, topHitPoint.transform.position, Quaternion.Euler(Vector3.zero));
-        var cloneComponent = clone.GetComponent<FloatingNumberController>();
-        cloneComponent.displayNumber = number;
+        var floatingNumberClone = Instantiate(floatingNumber, topHitPoint.transform.position, Quaternion.Euler(Vector3.zero));
+        var floatingNumberCloneComponent = floatingNumberClone.GetComponent<FloatingNumberController>();
+        floatingNumberCloneComponent.displayNumber = number;
+        floatingNumberCloneComponent.type = type;
     }
 
     public void Dead()
@@ -230,16 +231,17 @@ public class BaseEntity : MonoBehaviour
     }
 
     public void Heal(int quantity)
-    {        
-        if (currentHP + quantity > maxHP)
+    {
+        int finalHeal = quantity;
+        if (currentHP + finalHeal > maxHP)
         {
-            currentHP = maxHP;
-        } else
-        {
-            currentHP += quantity;
+            finalHeal = maxHP - currentHP;
         }
 
-        LogWithHP("Healed", quantity);
+        DisplayFloatingNumber(finalHeal, Enums.FloatingNumberType.Heal);
+        currentHP += finalHeal;
+
+        LogWithHP("Healed", finalHeal);
     }
 
     private void LogWithHP(string action, float quantity)
