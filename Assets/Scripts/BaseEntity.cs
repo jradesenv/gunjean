@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BaseEntity : MonoBehaviour
 {
-    public FloatingNumberController floatingNumber;
+    public FloatingTextController floatingText;
     public GameObject topHitPoint;
     public int maxHP;
     public int currentHP;
@@ -168,7 +168,7 @@ public class BaseEntity : MonoBehaviour
             finalDamage = currentHP;
         }
 
-        DisplayFloatingNumber(finalDamage, Enums.FloatingNumberType.Damage);
+        DisplayFloatingNumber(finalDamage, Enums.FloatingTextType.Damage);
         currentHP -= finalDamage;
 
 
@@ -180,12 +180,20 @@ public class BaseEntity : MonoBehaviour
         }
     }
 
-    private void DisplayFloatingNumber(int number, Enums.FloatingNumberType type)
+    protected void DisplayFloatingNumber(int number, Enums.FloatingTextType type)
     {
-        var floatingNumberClone = Instantiate(floatingNumber, topHitPoint.transform.position, Quaternion.Euler(Vector3.zero));
-        var floatingNumberCloneComponent = floatingNumberClone.GetComponent<FloatingNumberController>();
-        floatingNumberCloneComponent.displayNumber = number;
-        floatingNumberCloneComponent.type = type;
+        var floatingTextClone = Instantiate(floatingText, topHitPoint.transform.position, Quaternion.Euler(Vector3.zero));
+        var floatingTextCloneComponent = floatingTextClone.GetComponent<FloatingTextController>();
+        floatingTextCloneComponent.textToDisplay = number.ToString();
+        floatingTextCloneComponent.type = type;
+    }
+
+    protected void DisplayFloatingText(string text)
+    {
+        var floatingTextClone = Instantiate(floatingText, topHitPoint.transform.position, Quaternion.Euler(Vector3.zero));
+        var floatingTextCloneComponent = floatingTextClone.GetComponent<FloatingTextController>();
+        floatingTextCloneComponent.textToDisplay = text;
+        floatingTextCloneComponent.type = Enums.FloatingTextType.Text;
     }
 
     public void Dead()
@@ -238,7 +246,7 @@ public class BaseEntity : MonoBehaviour
             finalHeal = maxHP - currentHP;
         }
 
-        DisplayFloatingNumber(finalHeal, Enums.FloatingNumberType.Heal);
+        DisplayFloatingNumber(finalHeal, Enums.FloatingTextType.Heal);
         currentHP += finalHeal;
 
         LogWithHP("Healed", finalHeal);

@@ -6,9 +6,27 @@ using UnityEngine;
 public class EnemyController : BaseEntity
 {
     public List<BaseItemEntity> possibleLoot;
+    public float minTimeBetweenMessages;
+    public float maxTimeBetweenMessages;
 
     private bool isTargetInRange;
     private bool hasTarget;
+
+    private float timeBetweenMessagesCounter;
+    private EnemyMessage lastMessage;
+
+    public class EnemyMessage
+    {
+        public Enums.EnemyMessagesRarity rarity;
+        public string message;
+    }
+
+    private List<EnemyMessage> possibleMessages;
+
+    public void ResetMessageTimer()
+    {
+        timeBetweenMessagesCounter = Random.Range(minTimeBetweenMessages, maxTimeBetweenMessages + 1);
+    }
 
     public override void Start()
     {
@@ -19,7 +37,54 @@ public class EnemyController : BaseEntity
             possibleLoot = new List<BaseItemEntity>();
         }
 
+        if (possibleMessages == null)
+        {
+            possibleMessages = new List<EnemyMessage>()
+                {
+                new EnemyMessage()
+                    {
+                        rarity = Enums.EnemyMessagesRarity.Common,
+                        message = "Tu vai desce num saco!"
+                    },
+                new EnemyMessage()
+                    {
+                        rarity = Enums.EnemyMessagesRarity.Common,
+                        message = "Passa o ferro nele!"
+                    },
+                new EnemyMessage()
+                    {
+                        rarity = Enums.EnemyMessagesRarity.Common,
+                        message = "Perdeu, perdeu!"
+                    },
+                    new EnemyMessage() {
+                        rarity = Enums.EnemyMessagesRarity.LessCommon,
+                        message = "Passa dois real!"
+                    },
+                    new EnemyMessage()
+                    {
+                        rarity = Enums.EnemyMessagesRarity.Rare,
+                        message = "Ae mlk, passa tudo!"
+                    },
+                    new EnemyMessage()
+                    {
+                        rarity = Enums.EnemyMessagesRarity.Rare,
+                        message = "Iiiiih óh o cara ai!"
+                    },
+                    new EnemyMessage()
+                    {
+                        rarity = Enums.EnemyMessagesRarity.LessCommon,
+                        message = "Ta de palhaçada playboy?"
+                    },
+                    new EnemyMessage()
+                    {
+                        rarity = Enums.EnemyMessagesRarity.Rare,
+                        message = "Que isso cumpadi?"
+                    }
+                };
+        }
+
         possibleLoot = possibleLoot.OrderBy(item => (int)item.rarity).ToList();
+        possibleMessages = possibleMessages.OrderBy(message => (int)message.rarity).ToList();
     }
 
     public override void UpdateInputs()
@@ -79,11 +144,40 @@ public class EnemyController : BaseEntity
             hasTarget = true;
             isTargetInRange = RangeHelper.CheckIfTargetIsInRange(gameObject, closestPlayer, myGun.bulletRange);
             targetPosition = closestPlayer.transform.position;
+
+            if (isTargetInRange)
+            {
+                timeBetweenMessagesCounter -= Time.deltaTime;
+                if (timeBetweenMessagesCounter < 0)
+                {
+                    ResetMessageTimer();
+                    RandomSendMessage();
+                }
+            }
+
         }
         else
         {
             hasTarget = false;
             isTargetInRange = false;
+        }
+    }
+
+    public void RandomSendMessage()
+    {
+        EnemyMessage message = GetRandomMesssage();
+        if (message != null)
+        {
+            if (lastMessage != null)
+            {
+                while (lastMessage == message)
+                {
+                    message = GetRandomMesssage();
+                }
+            }
+
+            lastMessage = message;
+            DisplayFloatingText(message.message);
         }
     }
 
@@ -93,7 +187,25 @@ public class EnemyController : BaseEntity
         {
             //stop moving
             horizontalAxis = 0;
-            verticalAxis = 0;
+            if (hasTarget)
+            {
+                if (System.Math.Abs(targetPosition.y - transform.position.y) < 0.5)
+                {
+                    verticalAxis = 0;
+                }
+                else if (targetPosition.y < transform.position.y)
+                {
+                    verticalAxis = -1;
+                }
+                else
+                {
+                    verticalAxis = +1;
+                }
+            }
+            else
+            {
+                verticalAxis = 0;
+            }
         }
         else
         {
@@ -134,7 +246,29 @@ public class EnemyController : BaseEntity
         if (lootItem != null)
         {
             Instantiate(lootItem, gameObject.transform.position, Quaternion.identity);
-        }       
+        }
+    }
+
+    private EnemyMessage GetRandomMesssage()
+    {
+        var range = 0;
+        for (var i = 0; i < possibleMessages.Count; i++)
+            range += (int)possibleMessages[i].rarity;
+
+        range += range; //just so it can drop nothing
+        var rand = Random.Range(0, range);
+        var top = 0;
+
+        for (var i = 0; i < possibleMessages.Count; i++)
+        {
+            top += (int)possibleMessages[i].rarity;
+            if (rand < top)
+            {
+                return possibleMessages[i];
+            }
+        }
+
+        return null;
     }
 
     private BaseItemEntity GetRandomLoot()

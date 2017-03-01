@@ -5,10 +5,20 @@ using System.Text;
 
 public class Enums
 {
-    public enum FloatingNumberType
+    public enum FloatingTextType
     {
+        Text,
         Damage,
         Heal
+    }
+
+    public enum EnemyMessagesRarity
+    {
+        Common = 12,
+        LessCommon = 9,
+        SemiRare = 6,
+        Rare = 3,
+        VeryRare = 1
     }
 
     public class Items
@@ -27,8 +37,9 @@ public class Enums
 
         public enum Rarity
         {
-            Common = 9,
-            SemiRare = 5,
+            Common = 12,
+            LessCommon = 9,
+            SemiRare = 6,
             Rare = 3,
             VeryRare = 1
         }
