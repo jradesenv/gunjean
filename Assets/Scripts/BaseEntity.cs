@@ -29,7 +29,7 @@ public class BaseEntity : MonoBehaviour
     protected AimHelper.AimAngle lastAimAngle;
     public string ID;
 
-    public Dictionary<Enums.Items.Type, float> inventory;
+    public Dictionary<Enums.Items.Type, int> inventory;
 
     public virtual void Start()
     {
@@ -38,7 +38,7 @@ public class BaseEntity : MonoBehaviour
         myRigidbody = GetComponent<Rigidbody2D>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         myGun.ownerID = ID;
-        inventory = new Dictionary<Enums.Items.Type, float>();
+        inventory = new Dictionary<Enums.Items.Type, int>();
     }
 
     public string generateID()

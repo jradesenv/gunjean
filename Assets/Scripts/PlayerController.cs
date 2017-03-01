@@ -16,6 +16,16 @@ public class PlayerController : BaseEntity
         {
             Debug.LogError("CANT FIND CAMERA");
         }
+
+        var uiManager = FindObjectOfType<UIManager>();
+        if (uiManager != null)
+        {
+            uiManager.Follow(this);
+        }
+        else
+        {
+            Debug.LogError("CANT FIND UIMANAGER");
+        }
     }
 
     public override void UpdateInputs()

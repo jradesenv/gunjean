@@ -10,23 +10,42 @@ public class EnemySpawnerController : MonoBehaviour {
 
     private float timeBetweenSpawnsCounter;
     private float lastSpawnTime;
+    private UIManager uiManager;
 
     public int maxEnemiesAtSameTime;
 
 	// Use this for initialization
 	void Start () {
+        ResetTimers();
+        uiManager = FindObjectOfType<UIManager>();
+
+        if(uiManager == null)
+        {
+            Debug.LogError("CANT FIND UIMANAGER");
+        }
+    }
+
+    private void ResetTimers()
+    {
         timeBetweenSpawnsCounter = GetRandomSpawnTime();
+        lastSpawnTime = 0;
     }
 	
 	// Update is called once per frame
 	void Update () {
-        timeBetweenSpawnsCounter -= Time.deltaTime;
-        if(timeBetweenSpawnsCounter <= 0)
+        if (uiManager.isPlaying)
         {
-            if (CanSpawnMore())
+            timeBetweenSpawnsCounter -= Time.deltaTime;
+            if (timeBetweenSpawnsCounter <= 0)
             {
-                Spawn();
+                if (CanSpawnMore())
+                {
+                    Spawn();
+                }
             }
+        } else
+        {
+            ResetTimers();
         }
 	}
 
