@@ -61,8 +61,8 @@ public class PlayerController : BaseEntity
         var targetY = transform.position.y + ((y * -1) * 2);
         targetPosition = new Vector3(targetX, targetY, transform.position.z);
 
-        fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button7);
-        fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button7);
+        fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button5);
+        fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button5);
     }
 
     public override void UpdateAim()

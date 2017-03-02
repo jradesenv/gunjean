@@ -9,10 +9,14 @@ public class UIManager : MonoBehaviour {
     public Slider HPSliderControl;
     public Text HPTextControl;
     public Text GoldTextControl;
+    public Sprite Player1Sprite;
+    public Sprite Player1SpriteUp;
 
     public Slider HPSliderPlayer2Control;
     public Text HPTextPlayer2Control;
     public Text GoldTextPlayer2Control;
+    public Sprite Player2Sprite;
+    public Sprite Player2SpriteUp;
 
     public Button Restart1PlayerButton;
     public Button Restart2PlayerButton;
@@ -45,6 +49,8 @@ public class UIManager : MonoBehaviour {
 
         player1 = Instantiate(PlayerPrefab, PlayerSpawnPoint.transform.position, PlayerSpawnPoint.transform.rotation);
         player1.controllerType = Enums.ControllerType.MouseKeyboard;
+        player1.lookingDownSprite = Player1Sprite;
+        player1.lookingUpSprite = Player1SpriteUp;
 
         SetCameraTarget(player1);
 
@@ -75,11 +81,15 @@ public class UIManager : MonoBehaviour {
 
         player1 = Instantiate(PlayerPrefab, PlayerSpawnPoint.transform.position, PlayerSpawnPoint.transform.rotation);
         player1.controllerType = Enums.ControllerType.MouseKeyboard;
+        player1.lookingDownSprite = Player1Sprite;
+        player1.lookingUpSprite = Player1SpriteUp;
 
         SetCameraTarget(player1);
 
         player2 = Instantiate(PlayerPrefab, new Vector3(PlayerSpawnPoint.transform.position.x + 3, PlayerSpawnPoint.transform.position.y, PlayerSpawnPoint.transform.position.z), PlayerSpawnPoint.transform.rotation);
         player2.controllerType = Enums.ControllerType.XBoxController;
+        player2.lookingDownSprite = Player2Sprite;
+        player2.lookingUpSprite = Player2SpriteUp;
     }
 
     void ClearEnemies()
@@ -116,6 +126,10 @@ public class UIManager : MonoBehaviour {
         } else
         {
             UpdatePlayer2Status();
+            if (player1 == null )
+            {
+                SetCameraTarget(player2);
+            }
         }
 
         if (player1 == null && player2 == null)

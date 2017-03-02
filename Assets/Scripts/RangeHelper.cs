@@ -16,13 +16,15 @@ public class RangeHelper
     {
         GameObject[] objectsWithTag = GameObject.FindGameObjectsWithTag(targetTag);
 
-        var distance = -1;
+        float distance = -1;
         GameObject closestObject = null;
 
         for (int i = 0; i < objectsWithTag.Length; ++i)
         {
-            if (distance == -1 || distance > Vector3.Distance(me.transform.position, objectsWithTag[i].transform.position))
+            float thisDistance = Vector3.Distance(me.transform.position, objectsWithTag[i].transform.position);
+            if (distance == -1 || distance > thisDistance)
             {
+                distance = thisDistance;
                 closestObject = objectsWithTag[i];
             }
         }
