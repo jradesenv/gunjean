@@ -45,7 +45,7 @@ public class BulletController : MonoBehaviour {
         {
             if (atkedEntity.ID == ownerID)
             {
-                Debug.Log("collide on owner!");
+                //Debug.Log("collide on owner!");
                 return;
             }
 

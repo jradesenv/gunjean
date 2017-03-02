@@ -57,6 +57,7 @@ public class PlayerController : BaseEntity
 
     float _oldRX;
     float _oldRY;
+    float _minRValue = 0.20f;
     private void UpdateXBoxControllerInputs()
     {
         //Aim
@@ -65,9 +66,8 @@ public class PlayerController : BaseEntity
 
         float x = Input.GetAxisRaw("RHorizontal");
         float y = Input.GetAxisRaw("RVertical");
-        float R_analog_threshold = 0.20f;
 
-        if (Mathf.Abs(x) < R_analog_threshold && Mathf.Abs(y) < R_analog_threshold)
+        if (Mathf.Abs(x) < _minRValue && Mathf.Abs(y) < _minRValue)
         {
             x = _oldRX;
             y = _oldRY;
@@ -91,29 +91,34 @@ public class PlayerController : BaseEntity
         //aim
         if (controllerType == Enums.ControllerType.MouseKeyboard)
         {
-            Quaternion rotation = Quaternion.LookRotation(myGun.transform.position
-             - targetPosition, Vector3.forward);
-
-            myGun.transform.rotation = rotation;
-            myGun.transform.eulerAngles = new Vector3(0, 0, myGun.transform.eulerAngles.z);
+            UpdateAimMouseKeyboard();
         }
         else if (controllerType == Enums.ControllerType.XBoxController)
         {
-            float x = _oldRX * -1;
-            float y = _oldRY;
-            float aim_angle = 0.0f;
+            UpdateAimXBoxController();
+        }
+    }
 
-            //float R_analog_threshold = 0.20f;
-            //if (Mathf.Abs(x) < R_analog_threshold) { x = 0.0f; }
-            //if (Mathf.Abs(y) < R_analog_threshold) { y = 0.0f; }
+    private void UpdateAimMouseKeyboard()
+    {
+        Quaternion rotation = Quaternion.LookRotation(myGun.transform.position
+             - targetPosition, Vector3.forward);
 
-            if (x != 0.0f || y != 0.0f)
-            {
-                aim_angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg + 90;
+        myGun.transform.rotation = rotation;
+        myGun.transform.eulerAngles = new Vector3(0, 0, myGun.transform.eulerAngles.z);
+    }
 
-                myGun.transform.rotation = Quaternion.AngleAxis(aim_angle, Vector3.forward);
-                myGun.transform.eulerAngles = new Vector3(0, 0, myGun.transform.eulerAngles.z);
-            }
+    private void UpdateAimXBoxController()
+    {
+        float x = _oldRX * -1;
+        float y = _oldRY;
+
+        if (x != 0.0f || y != 0.0f)
+        {
+            float angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg + 90;
+
+            myGun.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            myGun.transform.eulerAngles = new Vector3(0, 0, myGun.transform.eulerAngles.z);
         }
     }
 }

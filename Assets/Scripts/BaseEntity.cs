@@ -151,7 +151,7 @@ public class BaseEntity : MonoBehaviour
         lastAimAngle = currentAimAngle;
     }
 
-    private void Flip()
+    protected virtual void Flip()
     {
         Vector3 newScale = gameObject.transform.localScale;
         newScale.x *= -1;
@@ -254,6 +254,6 @@ public class BaseEntity : MonoBehaviour
 
     private void LogWithHP(string action, float quantity)
     {
-        Debug.Log("Entity " + ID + " " + action + " " + quantity + " - CURRENT HP: " + currentHP);
+        //Debug.Log("Entity " + ID + " " + action + " " + quantity + " - CURRENT HP: " + currentHP);
     }
 }

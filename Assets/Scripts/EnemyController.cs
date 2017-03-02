@@ -87,6 +87,25 @@ public class EnemyController : BaseEntity
         possibleMessages = possibleMessages.OrderBy(message => (int)message.rarity).ToList();
     }
 
+    public override void UpdateAim()
+    {
+        //aim
+        float angle = Vector3.Angle(Vector3.up, targetPosition - transform.position);
+        angle *= gameObject.transform.localScale.x * -1;
+       // Debug.Log("angle: " + angle);
+        //float angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg + 90;
+
+        myGun.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        myGun.transform.eulerAngles = new Vector3(0, 0, myGun.transform.eulerAngles.z);
+    }
+
+    protected override void Flip()
+    {
+        Vector3 newScale = gameObject.transform.localScale;
+        newScale.x *= -1;
+        gameObject.transform.localScale = newScale;
+    }
+
     public override void UpdateInputs()
     {
         UpdateTarget();
