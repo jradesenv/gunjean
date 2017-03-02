@@ -5,6 +5,11 @@ using System.Text;
 
 public class Enums
 {
+    public enum ControllerType {
+        MouseKeyboard,
+        XBoxController
+    }
+
     public enum FloatingTextType
     {
         Text,
