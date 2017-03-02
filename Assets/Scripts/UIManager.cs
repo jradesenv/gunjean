@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour {
 
+    public CameraController MainCamera;
+    public CameraController Camera2;
+
     public Slider HPSliderControl;
     public Text HPTextControl;
     public Text GoldTextControl;
@@ -52,22 +55,23 @@ public class UIManager : MonoBehaviour {
         player1.lookingDownSprite = Player1Sprite;
         player1.lookingUpSprite = Player1SpriteUp;
 
-        SetCameraTarget(player1);
+        AdjustToOneCamera();
+        MainCamera.Follow(player1);
 
         player2 = null;
     }
 
-    private void SetCameraTarget(PlayerController player)
+    private void AdjustToOneCamera()
     {
-        var camera = FindObjectOfType<CameraController>();
-        if (camera != null)
-        {
-            camera.Follow(player);
-        }
-        else
-        {
-            Debug.LogError("CANT FIND CAMERA");
-        }
+        Camera2.gameObject.SetActive(false);
+        MainCamera.GetComponent<Camera>().rect = new Rect(0,0,1,1);
+    }
+
+    private void AdjustToTwoCameras()
+    {
+        Camera2.gameObject.SetActive(true);
+        MainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 0.5f, 1);
+        Camera2.GetComponent<Camera>().rect = new Rect(0.5f, 0, 0.5f, 1);
     }
 
     private void OnRestart2PlayerClick()
@@ -84,12 +88,15 @@ public class UIManager : MonoBehaviour {
         player1.lookingDownSprite = Player1Sprite;
         player1.lookingUpSprite = Player1SpriteUp;
 
-        SetCameraTarget(player1);
+        AdjustToTwoCameras();
+        MainCamera.Follow(player1);
 
         player2 = Instantiate(PlayerPrefab, new Vector3(PlayerSpawnPoint.transform.position.x + 3, PlayerSpawnPoint.transform.position.y, PlayerSpawnPoint.transform.position.z), PlayerSpawnPoint.transform.rotation);
         player2.controllerType = Enums.ControllerType.XBoxController;
         player2.lookingDownSprite = Player2Sprite;
         player2.lookingUpSprite = Player2SpriteUp;
+
+        Camera2.Follow(player2);
     }
 
     void ClearEnemies()
@@ -123,19 +130,30 @@ public class UIManager : MonoBehaviour {
         if (player2 == null)
         {
             ClearPlayer2Info();
+
+            if(player1 != null)
+            {
+                AdjustToOneCamera();
+                MainCamera.Follow(player1);
+            }
+
         } else
         {
             UpdatePlayer2Status();
-            if (player1 == null )
+
+            if (player1 == null)
             {
-                SetCameraTarget(player2);
+                AdjustToOneCamera();
+                MainCamera.Follow(player2);
             }
         }
+
 
         if (player1 == null && player2 == null)
         {
             if (isPlaying)
             {
+                AdjustToOneCamera();
                 isPlaying = false;
                 Restart1PlayerButton.gameObject.SetActive(true);
                 Restart2PlayerButton.gameObject.SetActive(true);
