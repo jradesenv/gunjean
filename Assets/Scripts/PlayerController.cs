@@ -46,8 +46,6 @@ public class PlayerController : BaseEntity
         #if UNITY_STANDALONE_OSX
             float x = Input.GetAxisRaw("RHorizontalMac");
             float y = Input.GetAxisRaw("RVerticalMac");
-
-            Debug.Log("RHorizontalMac: " + x + " RVerticalMac: " + y);
         #else
             float x = Input.GetAxisRaw("RHorizontal");
             float y = Input.GetAxisRaw("RVertical");
@@ -68,9 +66,13 @@ public class PlayerController : BaseEntity
         var targetY = transform.position.y + ((y * -1) * 2);
         targetPosition = new Vector3(targetX, targetY, transform.position.z);
 
-        fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Joystick1Button14);
-        fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button5) || Input.GetKeyUp(KeyCode.Joystick1Button14);
-
+        #if UNITY_STANDALONE_OSX
+            fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button14);
+            fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button14);
+        #else
+            fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button5);
+            fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button5);
+        #endif       
     }
 
     public override void UpdateAim()
