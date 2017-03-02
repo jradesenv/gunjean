@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour {
 
     public CameraController MainCamera;
     public CameraController Camera2;
+    public Toggle CameraSempreSeparadaToggle; 
 
     public Slider HPSliderControl;
     public Text HPTextControl;
@@ -28,11 +29,13 @@ public class UIManager : MonoBehaviour {
 
     private PlayerController player1;
     private PlayerController player2;
+    private bool isMulticamera;
 
     public bool isPlaying;
 
 	// Use this for initialization
 	void Start () {
+        AdjustToOneCamera(true);
         HPSliderControl.maxValue = 1;
         HPSliderControl.value = 0;
         HPTextControl.text = "";
@@ -45,6 +48,8 @@ public class UIManager : MonoBehaviour {
     {
         Restart1PlayerButton.gameObject.SetActive(false);
         Restart2PlayerButton.gameObject.SetActive(false);
+        CameraSempreSeparadaToggle.gameObject.SetActive(false);
+
         HPSliderPlayer2Control.gameObject.SetActive(false);
 
         ClearEnemies();
@@ -61,24 +66,35 @@ public class UIManager : MonoBehaviour {
         player2 = null;
     }
 
-    private void AdjustToOneCamera()
+    private void AdjustToOneCamera(bool forceUpdate = false)
     {
-        Camera2.gameObject.SetActive(false);
-        MainCamera.GetComponent<Camera>().rect = new Rect(0,0,1,1);
+        if (forceUpdate || isMulticamera)
+        {
+            isMulticamera = false;
+            Camera2.gameObject.SetActive(false);
+            MainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 1, 1);
+        }
     }
 
-    private void AdjustToTwoCameras()
+    private void AdjustToTwoCameras(bool forceUpdate = false)
     {
-        Camera2.gameObject.SetActive(true);
-        MainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 0.5f, 1);
-        Camera2.GetComponent<Camera>().rect = new Rect(0.5f, 0, 0.5f, 1);
+        if (forceUpdate || !isMulticamera)
+        {
+            isMulticamera = true;
+            Camera2.gameObject.SetActive(true);
+            MainCamera.GetComponent<Camera>().rect = new Rect(0, 0, 0.5f, 1);
+            Camera2.GetComponent<Camera>().rect = new Rect(0.5f, 0, 0.5f, 1);
+        }
     }
 
     private void OnRestart2PlayerClick()
     {
         Restart1PlayerButton.gameObject.SetActive(false);
         Restart2PlayerButton.gameObject.SetActive(false);
+        CameraSempreSeparadaToggle.gameObject.SetActive(false);
+
         HPSliderPlayer2Control.gameObject.SetActive(true);
+
 
         ClearEnemies();
         ClearLoot();
@@ -148,6 +164,10 @@ public class UIManager : MonoBehaviour {
             }
         }
 
+        if (!CameraSempreSeparadaToggle.isOn)  // camera unica perto e separada quando longe
+        {
+            AdjustCameraToCurrentPlayersDistance();
+        }
 
         if (player1 == null && player2 == null)
         {
@@ -157,6 +177,7 @@ public class UIManager : MonoBehaviour {
                 isPlaying = false;
                 Restart1PlayerButton.gameObject.SetActive(true);
                 Restart2PlayerButton.gameObject.SetActive(true);
+                CameraSempreSeparadaToggle.gameObject.SetActive(true);
 
                 ClearPlayer1Info();
                 ClearPlayer2Info();
@@ -169,9 +190,29 @@ public class UIManager : MonoBehaviour {
                 isPlaying = true;
                 Restart1PlayerButton.gameObject.SetActive(false);
                 Restart2PlayerButton.gameObject.SetActive(false);
+                CameraSempreSeparadaToggle.gameObject.SetActive(false);
             }
         }
 	}
+
+    private void AdjustCameraToCurrentPlayersDistance()
+    {
+        if (player1 != null && player2 != null)
+        {
+            float playerDistance = Vector3.Distance(player1.gameObject.transform.position, player2.gameObject.transform.position);
+            if (playerDistance > 10)
+            {
+                AdjustToTwoCameras();
+                MainCamera.Follow(player1);
+                Camera2.Follow(player2);
+            }
+            else
+            {
+                AdjustToOneCamera();
+                MainCamera.Follow(player1);
+            }
+        }
+    }
 
     private void ClearPlayer1Info()
     {
