@@ -9,11 +9,18 @@ public class UIManager : MonoBehaviour {
     public Slider HPSliderControl;
     public Text HPTextControl;
     public Text GoldTextControl;
-    public Button RestartButton;
+
+    public Slider HPSliderPlayer2Control;
+    public Text HPTextPlayer2Control;
+    public Text GoldTextPlayer2Control;
+
+    public Button Restart1PlayerButton;
+    public Button Restart2PlayerButton;
     public GameObject PlayerSpawnPoint;
     public PlayerController PlayerPrefab;
 
-    private BaseEntity targetToFollow;
+    private PlayerController player1;
+    private PlayerController player2;
 
     public bool isPlaying;
 
@@ -23,17 +30,56 @@ public class UIManager : MonoBehaviour {
         HPSliderControl.value = 0;
         HPTextControl.text = "";
         GoldTextControl.text = "";
-        RestartButton.onClick.AddListener(OnRestartClick);
-	}
+        Restart1PlayerButton.onClick.AddListener(OnRestart1PlayerClick);
+        Restart2PlayerButton.onClick.AddListener(OnRestart2PlayerClick);
+    }
 
-    private void OnRestartClick()
+    private void OnRestart1PlayerClick()
     {
-        RestartButton.gameObject.SetActive(false);
+        Restart1PlayerButton.gameObject.SetActive(false);
+        Restart2PlayerButton.gameObject.SetActive(false);
+        HPSliderPlayer2Control.gameObject.SetActive(false);
 
         ClearEnemies();
         ClearLoot();
 
-        Instantiate(PlayerPrefab, PlayerSpawnPoint.transform.position, PlayerSpawnPoint.transform.rotation);
+        player1 = Instantiate(PlayerPrefab, PlayerSpawnPoint.transform.position, PlayerSpawnPoint.transform.rotation);
+        player1.controllerType = Enums.ControllerType.MouseKeyboard;
+
+        SetCameraTarget(player1);
+
+        player2 = null;
+    }
+
+    private void SetCameraTarget(PlayerController player)
+    {
+        var camera = FindObjectOfType<CameraController>();
+        if (camera != null)
+        {
+            camera.Follow(player1);
+        }
+        else
+        {
+            Debug.LogError("CANT FIND CAMERA");
+        }
+    }
+
+    private void OnRestart2PlayerClick()
+    {
+        Restart1PlayerButton.gameObject.SetActive(false);
+        Restart2PlayerButton.gameObject.SetActive(false);
+        HPSliderPlayer2Control.gameObject.SetActive(true);
+
+        ClearEnemies();
+        ClearLoot();
+
+        player1 = Instantiate(PlayerPrefab, PlayerSpawnPoint.transform.position, PlayerSpawnPoint.transform.rotation);
+        player1.controllerType = Enums.ControllerType.MouseKeyboard;
+
+        SetCameraTarget(player1);
+
+        player2 = Instantiate(PlayerPrefab, new Vector3(PlayerSpawnPoint.transform.position.x + 3, PlayerSpawnPoint.transform.position.y, PlayerSpawnPoint.transform.position.z), PlayerSpawnPoint.transform.rotation);
+        player2.controllerType = Enums.ControllerType.XBoxController;
     }
 
     void ClearEnemies()
@@ -56,46 +102,86 @@ public class UIManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-		if (targetToFollow != null)
+        if (player1 == null)
         {
-            if (!isPlaying)
-            {
-                isPlaying = true;
-                RestartButton.gameObject.SetActive(false);
-            }
-
-            HPSliderControl.maxValue = targetToFollow.maxHP;
-            HPSliderControl.value = targetToFollow.currentHP;
-            HPTextControl.text = "HP: " + targetToFollow.currentHP + "/" + targetToFollow.maxHP;
-
-            int currentGold = 0;
-            if(targetToFollow.inventory.ContainsKey(Enums.Items.Type.Money))
-            {
-                currentGold = targetToFollow.inventory[Enums.Items.Type.Money];
-            }
-
-            GoldTextControl.text = "Gold: " + currentGold;
+            ClearPlayer1Info();
         } else
+        {
+            UpdatePlayer1Status();
+        }
+
+        if (player2 == null)
+        {
+            ClearPlayer2Info();
+        } else
+        {
+            UpdatePlayer2Status();
+        }
+
+        if (player1 == null && player2 == null)
         {
             if (isPlaying)
             {
                 isPlaying = false;
-                RestartButton.gameObject.SetActive(true);
+                Restart1PlayerButton.gameObject.SetActive(true);
+                Restart2PlayerButton.gameObject.SetActive(true);
 
-                HPSliderControl.maxValue = 1;
-                HPSliderControl.value = 0;
-                HPTextControl.text = "Game Over";
+                ClearPlayer1Info();
+                ClearPlayer2Info();
+
+            }
+        } else
+        {
+            if (!isPlaying)
+            {
+                isPlaying = true;
+                Restart1PlayerButton.gameObject.SetActive(false);
+                Restart2PlayerButton.gameObject.SetActive(false);
             }
         }
 	}
 
-    public void Follow(BaseEntity target)
+    private void ClearPlayer1Info()
     {
-        targetToFollow = target;
+        HPSliderControl.maxValue = 1;
+        HPSliderControl.value = 0;
+        HPTextControl.text = "Game Over";
     }
 
-    public void Unfollow(BaseEntity target)
+    private void ClearPlayer2Info()
     {
-        targetToFollow = null;
+        HPSliderPlayer2Control.maxValue = 1;
+        HPSliderPlayer2Control.value = 0;
+        HPTextPlayer2Control.text = "Game Over";
+    }
+
+    private void UpdatePlayer1Status()
+    {
+        HPSliderControl.maxValue = player1.maxHP;
+        HPSliderControl.value = player1.currentHP;
+        HPTextControl.text = "HP: " + player1.currentHP + "/" + player1.maxHP;
+
+        int currentGold = 0;
+        if (player1.inventory != null && player1.inventory.ContainsKey(Enums.Items.Type.Money))
+        {
+            currentGold = player1.inventory[Enums.Items.Type.Money];
+        }
+
+        GoldTextControl.text = "Gold: " + currentGold;
+    }
+
+    private void UpdatePlayer2Status()
+    {
+        HPSliderPlayer2Control.maxValue = player2.maxHP;
+        HPSliderPlayer2Control.value = player2.currentHP;
+        HPTextPlayer2Control.text = "HP: " + player2.currentHP + "/" + player2.maxHP;
+
+        int currentGold = 0;
+        if (player2.inventory != null && player2.inventory.ContainsKey(Enums.Items.Type.Money))
+        {
+            currentGold = player2.inventory[Enums.Items.Type.Money];
+        }
+
+        GoldTextPlayer2Control.text = "Gold: " + currentGold;
     }
 }

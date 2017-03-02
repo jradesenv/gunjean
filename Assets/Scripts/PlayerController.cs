@@ -10,27 +10,6 @@ public class PlayerController : BaseEntity
     public override void Start()
     {
         base.Start();
-
-        controllerType = Enums.ControllerType.XBoxController;
-
-        var camera = FindObjectOfType<CameraController>();
-        if (camera != null)
-        {
-            camera.Follow(this);
-        } else
-        {
-            Debug.LogError("CANT FIND CAMERA");
-        }
-
-        var uiManager = FindObjectOfType<UIManager>();
-        if (uiManager != null)
-        {
-            uiManager.Follow(this);
-        }
-        else
-        {
-            Debug.LogError("CANT FIND UIMANAGER");
-        }
     }
 
     public override void UpdateInputs()
@@ -61,8 +40,8 @@ public class PlayerController : BaseEntity
     private void UpdateXBoxControllerInputs()
     {
         //Aim
-        horizontalAxis = Input.GetAxisRaw("Horizontal");
-        verticalAxis = Input.GetAxisRaw("Vertical");
+        horizontalAxis = Input.GetAxisRaw("LHorizontal");
+        verticalAxis = Input.GetAxisRaw("LVertical");
 
         float x = Input.GetAxisRaw("RHorizontal");
         float y = Input.GetAxisRaw("RVertical");
@@ -82,8 +61,8 @@ public class PlayerController : BaseEntity
         var targetY = transform.position.y + ((y * -1) * 2);
         targetPosition = new Vector3(targetX, targetY, transform.position.z);
 
-        fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button5);
-        fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button5);
+        fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button7);
+        fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button7);
     }
 
     public override void UpdateAim()
