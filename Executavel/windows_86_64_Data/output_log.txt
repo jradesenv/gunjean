@@ -19,9 +19,22 @@ Platform assembly: C:\Users\Pichau\Repositorios\unity\Gunjean\Executavel\windows
 Loading C:\Users\Pichau\Repositorios\unity\Gunjean\Executavel\windows_86_64_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\Pichau\Repositorios\unity\Gunjean\Executavel\windows_86_64_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
 Loading C:\Users\Pichau\Repositorios\unity\Gunjean\Executavel\windows_86_64_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-- Completed reload, in  0.030 seconds
+- Completed reload, in  0.025 seconds
 Platform assembly: C:\Users\Pichau\Repositorios\unity\Gunjean\Executavel\windows_86_64_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\Pichau\Repositorios\unity\Gunjean\Executavel\windows_86_64_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.748941 ms
+NullReferenceException: Object reference not set to an instance of an object
+  at EnemyController.RandomSendMessage () [0x00000] in <filename unknown>:0 
+  at EnemyController.UpdateTarget () [0x00000] in <filename unknown>:0 
+  at EnemyController.UpdateInputs () [0x00000] in <filename unknown>:0 
+  at BaseEntity.Update () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: ec0 -> priority: 1 
+  Thread -> id: 1f20 -> priority: 1 

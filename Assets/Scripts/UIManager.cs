@@ -62,7 +62,7 @@ public class UIManager : MonoBehaviour {
         var camera = FindObjectOfType<CameraController>();
         if (camera != null)
         {
-            camera.Follow(player1);
+            camera.Follow(player);
         }
         else
         {
