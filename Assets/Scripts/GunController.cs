@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GunController : MonoBehaviour {
+public class GunController : MonoBehaviour
+{
 
     public bool isFiring;
+    public Enums.Layers BulletLayer;
+    public string gunName;
 
     public BulletController bullet;
     public float bulletSpeed;
@@ -19,18 +22,23 @@ public class GunController : MonoBehaviour {
 
     public string ownerID;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         shotCounter = 0;
         mySpriteRenderer = GetComponent<SpriteRenderer>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-		if (isFiring)
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (shotCounter > 0)
         {
             shotCounter -= Time.deltaTime;
-            if (shotCounter <= 0)
+        }
+        else if (shotCounter <= 0)
+        {
+            if (isFiring)
             {
                 shotCounter = timeBetweenShots;
                 BulletController newBullet = Instantiate(bullet, firePoint.position, transform.rotation);
@@ -39,24 +47,23 @@ public class GunController : MonoBehaviour {
                 newBullet.maxDamage = bulletMaxDamage;
                 newBullet.range = bulletRange;
                 newBullet.ownerID = ownerID;
+                newBullet.gameObject.layer = (int)BulletLayer;
             }
-        } else
-        {
-            shotCounter = 0;
         }
-	}
+    }
 
     public void UpdateFlip(bool shouldFlip)
     {
-        mySpriteRenderer.flipX = shouldFlip;;
+        mySpriteRenderer.flipX = shouldFlip; ;
     }
 
     public void SetBehindEntity(bool check, SpriteRenderer entitySpriteRenderer)
     {
-        if(check)
+        if (check)
         {
             mySpriteRenderer.sortingOrder = entitySpriteRenderer.sortingOrder - 1;
-        } else
+        }
+        else
         {
             mySpriteRenderer.sortingOrder = entitySpriteRenderer.sortingOrder + 1;
         }

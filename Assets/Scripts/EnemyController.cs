@@ -32,6 +32,8 @@ public class EnemyController : BaseEntity
     {
         base.Start();
 
+        myGun.BulletLayer = Enums.Layers.EnemyBullets;
+
         if (possibleLoot == null)
         {
             possibleLoot = new List<BaseItemEntity>();

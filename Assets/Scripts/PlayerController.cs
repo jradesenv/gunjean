@@ -5,19 +5,74 @@ using UnityEngine;
 public class PlayerController : BaseEntity
 {
     public Enums.ControllerType controllerType;
+    public List<GunController> PlayerGunsPrefabs;
+    public int currentGunIndex = -1;
+    public float timeBetweenChangeGuns = 1f;
+    public float currentTimeBetweenChangeGunsCounter;
 
+    private List<GunController> PlayerGunsInstances;
 
     public override void Start()
     {
         base.Start();
+
+        myGun.BulletLayer = Enums.Layers.PlayerBullets;
+
+        PlayerGunsInstances = new List<GunController>();
+        foreach (GunController gunPrefab in PlayerGunsPrefabs)
+        {
+            var newGun = Instantiate(gunPrefab, myGun.transform.parent);
+            newGun.BulletLayer = myGun.BulletLayer;
+            newGun.gameObject.SetActive(false);
+            PlayerGunsInstances.Add(newGun);
+        }
+
+        ChangeGun(0);
+    }
+
+    private void ChangeGun(int index = -1)
+    {
+        if (currentTimeBetweenChangeGunsCounter <= 0)
+        {
+            currentTimeBetweenChangeGunsCounter = timeBetweenChangeGuns;
+            if (PlayerGunsInstances.Count > 0)
+            {
+                if (index > -1)
+                {
+                    currentGunIndex = index;
+                }
+                else
+                {
+                    if (currentGunIndex == (PlayerGunsInstances.Count - 1))
+                    {
+                        currentGunIndex = 0;
+                    }
+                    else
+                    {
+                        currentGunIndex += 1;
+                    }
+                }
+
+                myGun.gameObject.SetActive(false);
+                myGun = PlayerGunsInstances[currentGunIndex];
+                myGun.gameObject.SetActive(true);
+                DisplayFloatingText(myGun.gunName);
+            }
+        }
     }
 
     public override void UpdateInputs()
     {
+        if (currentTimeBetweenChangeGunsCounter > 0)
+        {
+            currentTimeBetweenChangeGunsCounter -= Time.deltaTime;
+        }
+
         if (controllerType == Enums.ControllerType.MouseKeyboard)
         {
             UpdateMouseKeyboardInputs();
-        } else
+        }
+        else
         {
             UpdateXBoxControllerInputs();
         }
@@ -32,6 +87,11 @@ public class PlayerController : BaseEntity
         targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         fireButtonGotDown = Input.GetMouseButtonDown(0);
         fireButtonGotUp = Input.GetMouseButtonUp(0);
+
+        if (Input.GetMouseButton(1))
+        {
+            ChangeGun();
+        }
     }
 
     float _oldRX;
@@ -63,6 +123,11 @@ public class PlayerController : BaseEntity
 
         fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button5);
         fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button5);
+
+        if (Input.GetKey(KeyCode.Joystick1Button4))
+        {
+            ChangeGun();
+        }
     }
 
     public override void UpdateAim()

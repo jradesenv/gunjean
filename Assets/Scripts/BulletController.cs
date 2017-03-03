@@ -10,42 +10,41 @@ public class BulletController : MonoBehaviour {
     public float range;
     public string ownerID;
 
-    private Rigidbody2D myRigidbody;
-    private Vector3 startPosition;
+    protected Rigidbody2D myRigidbody;
+    protected Vector3 startPosition;
 
 	// Use this for initialization
-	void Start () {
+	protected virtual void Start () {
         myRigidbody = GetComponent<Rigidbody2D>();
         startPosition = gameObject.transform.position;
     }
 	
-    void Update()
+    protected virtual void Update()
     {
         if (Vector3.Distance(startPosition, gameObject.transform.position) >= range)
         {
-            Destroy(gameObject);
+            OnRangeTraveled();
         }
     }
 
-	// Update is called once per frame
-    void FixedUpdate()
+    protected virtual void OnRangeTraveled()
+    {
+        Destroy(gameObject);
+    }
+
+    // Update is called once per frame
+    protected virtual void FixedUpdate()
     {
         myRigidbody.AddForce(gameObject.transform.up * speed);
     }
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    Debug.Log("BULLET COLLIDE");
-    //}
-
-    void OnCollisionEnter2D(Collision2D other)
+    protected virtual void OnCollisionEnter2D(Collision2D other)
     {
         BaseEntity atkedEntity = other.gameObject.GetComponent<BaseEntity>();
         if (atkedEntity)
         {
             if (atkedEntity.ID == ownerID)
             {
-                //Debug.Log("collide on owner!");
                 return;
             }
 

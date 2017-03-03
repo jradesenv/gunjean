@@ -5,6 +5,12 @@ using System.Text;
 
 public class Enums
 {
+    public enum Layers
+    {
+        EnemyBullets = 9,
+        PlayerBullets = 12
+    }
+
     public enum ControllerType {
         MouseKeyboard,
         XBoxController
@@ -54,7 +60,8 @@ public class Enums
     {
         public enum Type
         {
-            Normal
+            Normal,
+            Explosion
         }
     }
 

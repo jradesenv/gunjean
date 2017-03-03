@@ -107,7 +107,7 @@ public class UIManager : MonoBehaviour {
         AdjustToTwoCameras();
         MainCamera.Follow(player1);
 
-        player2 = Instantiate(PlayerPrefab, new Vector3(PlayerSpawnPoint.transform.position.x + 3, PlayerSpawnPoint.transform.position.y, PlayerSpawnPoint.transform.position.z), PlayerSpawnPoint.transform.rotation);
+        player2 = Instantiate(PlayerPrefab, PlayerSpawnPoint.transform.position, PlayerSpawnPoint.transform.rotation);
         player2.controllerType = Enums.ControllerType.XBoxController;
         player2.lookingDownSprite = Player2Sprite;
         player2.lookingUpSprite = Player2SpriteUp;
