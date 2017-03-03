@@ -55,6 +55,7 @@ public class PlayerController : BaseEntity
 
                 myGun.gameObject.SetActive(false);
                 myGun = PlayerGunsInstances[currentGunIndex];
+                myGun.ClearTimeBetweenShots();
                 myGun.gameObject.SetActive(true);
                 DisplayFloatingText(myGun.gunName);
             }

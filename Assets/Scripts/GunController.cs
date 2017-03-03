@@ -29,6 +29,11 @@ public class GunController : MonoBehaviour
         mySpriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    public void ClearTimeBetweenShots()
+    {
+        shotCounter = 0;
+    }
+
     // Update is called once per frame
     void Update()
     {
