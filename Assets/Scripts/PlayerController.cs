@@ -104,8 +104,13 @@ public class PlayerController : BaseEntity
         horizontalAxis = Input.GetAxisRaw("LHorizontal");
         verticalAxis = Input.GetAxisRaw("LVertical");
 
-        float x = Input.GetAxisRaw("RHorizontal");
-        float y = Input.GetAxisRaw("RVertical");
+        #if UNITY_STANDALONE_OSX
+            float x = Input.GetAxisRaw("RHorizontalMac");
+            float y = Input.GetAxisRaw("RVerticalMac");
+        #else
+            float x = Input.GetAxisRaw("RHorizontal");
+            float y = Input.GetAxisRaw("RVertical");
+        #endif
 
         if (Mathf.Abs(x) < _minRValue && Mathf.Abs(y) < _minRValue)
         {
@@ -122,13 +127,23 @@ public class PlayerController : BaseEntity
         var targetY = transform.position.y + ((y * -1) * 2);
         targetPosition = new Vector3(targetX, targetY, transform.position.z);
 
-        fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button5);
-        fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button5);
+        #if UNITY_STANDALONE_OSX
+            fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button14);
+            fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button14);
 
-        if (Input.GetKey(KeyCode.Joystick1Button4))
-        {
-            ChangeGun();
-        }
+            if (Input.GetKey(KeyCode.Joystick1Button13))
+            {
+                ChangeGun();
+            }
+        #else
+            fireButtonGotDown = Input.GetKeyDown(KeyCode.Joystick1Button5);
+            fireButtonGotUp = Input.GetKeyUp(KeyCode.Joystick1Button5);
+
+            if (Input.GetKey(KeyCode.Joystick1Button4))
+            {
+                ChangeGun();
+            }
+        #endif       
     }
 
     public override void UpdateAim()
