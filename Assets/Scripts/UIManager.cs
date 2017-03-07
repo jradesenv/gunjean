@@ -15,12 +15,14 @@ public class UIManager : MonoBehaviour {
     public Text GoldTextControl;
     public Sprite Player1Sprite;
     public Sprite Player1SpriteUp;
+    public SpriteRenderer Player1CurrentGunSpriteRenderer;
 
     public Slider HPSliderPlayer2Control;
     public Text HPTextPlayer2Control;
     public Text GoldTextPlayer2Control;
     public Sprite Player2Sprite;
     public Sprite Player2SpriteUp;
+    public SpriteRenderer Player2CurrentGunSpriteRenderer;
 
     public Button Restart1PlayerButton;
     public Button Restart2PlayerButton;
@@ -233,6 +235,7 @@ public class UIManager : MonoBehaviour {
         HPSliderControl.maxValue = player1.maxHP;
         HPSliderControl.value = player1.currentHP;
         HPTextControl.text = "HP: " + player1.currentHP + "/" + player1.maxHP;
+        Player1CurrentGunSpriteRenderer.sprite = player1.myGun.GetComponent<SpriteRenderer>().sprite;
 
         int currentGold = 0;
         if (player1.inventory != null && player1.inventory.ContainsKey(Enums.Items.Type.Money))
@@ -248,6 +251,7 @@ public class UIManager : MonoBehaviour {
         HPSliderPlayer2Control.maxValue = player2.maxHP;
         HPSliderPlayer2Control.value = player2.currentHP;
         HPTextPlayer2Control.text = "HP: " + player2.currentHP + "/" + player2.maxHP;
+        Player2CurrentGunSpriteRenderer.sprite = player2.myGun.GetComponent<SpriteRenderer>().sprite;
 
         int currentGold = 0;
         if (player2.inventory != null && player2.inventory.ContainsKey(Enums.Items.Type.Money))
